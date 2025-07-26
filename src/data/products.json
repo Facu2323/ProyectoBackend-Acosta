@@ -1,0 +1,13 @@
+[
+  {
+    "title": "Lapicera Azul",
+    "description": "Lapicera tinta azul, punta fina",
+    "code": "LAP-123",
+    "price": 120,
+    "status": true,
+    "stock": 30,
+    "category": "Librería",
+    "thumbnails": [],
+    "id": 1
+  }
+]
