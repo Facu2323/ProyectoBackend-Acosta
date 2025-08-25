@@ -9,5 +9,10 @@
     "category": "Librería",
     "thumbnails": [],
     "id": 1
+  },
+  {
+    "id": 2,
+    "title": "lapicera",
+    "price": "1500"
   }
 ]
