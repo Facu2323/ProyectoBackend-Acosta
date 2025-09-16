@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{{product.title}}</title>
+  <link rel="stylesheet" href="/static/styles/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>{{product.title}}</h1>
+    <div class="product-detail-card">
+      <p>{{product.description}}</p>
+      <p class="price">Precio: ${{product.price}}</p>
+      <p>Categoría: {{product.category}}</p>
+      <button class="btn" onclick="addToCart('{{product._id}}')">Agregar al carrito</button>
+    </div>
+    <a href="/products" class="btn">Volver a productos</a>
+  </div>
+
+  <script>
+    const TEST_CART_ID = "{{TEST_CART_ID}}";
+
+    async function addToCart(pid) {
+      try {
+        const res = await fetch(`/api/carts/${TEST_CART_ID}/products/${pid}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ quantity: 1 })
+        });
+        const data = await res.json();
+        if(data.status === "success") alert("Producto agregado al carrito ✅");
+        else alert("Error: " + data.message);
+      } catch (error) {
+        alert("Error al agregar al carrito: " + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
+
+

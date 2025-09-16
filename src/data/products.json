@@ -1,18 +1,6 @@
 [
-  {
-    "title": "Lapicera Azul",
-    "description": "Lapicera tinta azul, punta fina",
-    "code": "LAP-123",
-    "price": 120,
-    "status": true,
-    "stock": 30,
-    "category": "Librería",
-    "thumbnails": [],
-    "id": 1
-  },
-  {
-    "id": 2,
-    "title": "lapicera",
-    "price": "1500"
-  }
+  { "id": 1, "title": "Cuaderno", "description": "Cuaderno rayado A4", "price": 1200, "category": "librería" },
+  { "id": 2, "title": "Lapicera", "description": "Lapicera negra", "price": 150, "category": "librería" },
+  { "id": 3, "title": "Regla", "description": "Regla 30cm", "price": 200, "category": "librería" }
 ]
+

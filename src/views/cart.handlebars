@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Carrito</title>
+  <link rel="stylesheet" href="/static/styles/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Carrito de Compras</h1>
+
+    {{#if cart.products.length}}
+      <table class="cart">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each cart.products}}
+            <tr>
+              <td>{{this.product.title}}</td>
+              <td>
+                <input type="number" min="1" value="{{this.quantity}}" onchange="updateQuantity('{{this.product._id}}', this.value)">
+              </td>
+              <td>${{this.product.price}}</td>
+              <td>
+                <button class="btn" onclick="removeProduct('{{this.product._id}}')">Eliminar</button>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <button class="btn" onclick="clearCart()">Vaciar carrito</button>
+    {{else}}
+      <p>El carrito está vacío.</p>
+    {{/if}}
+
+    <a href="/products" class="btn">Volver a productos</a>
+  </div>
+
+  <script>
+    const TEST_CART_ID = "{{TEST_CART_ID}}";
+
+    async function removeProduct(pid) {
+      try {
+        const res = await fetch(`/api/carts/${TEST_CART_ID}/products/${pid}`, { method: "DELETE" });
+        if(res.ok) location.reload();
+      } catch (error) {
+        alert("Error al eliminar producto: " + error.message);
+      }
+    }
+
+    async function updateQuantity(pid, qty) {
+      try {
+        const res = await fetch(`/api/carts/${TEST_CART_ID}/products/${pid}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ quantity: parseInt(qty) })
+        });
+        if(res.ok) location.reload();
+      } catch (error) {
+        alert("Error al actualizar cantidad: " + error.message);
+      }
+    }
+
+    async function clearCart() {
+      try {
+        const res = await fetch(`/api/carts/${TEST_CART_ID}`, { method: "DELETE" });
+        if(res.ok) location.reload();
+      } catch (error) {
+        alert("Error al vaciar carrito: " + error.message);
+      }
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+

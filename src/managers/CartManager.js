@@ -1,41 +1,63 @@
-import fs from 'fs/promises';
-const path = './src/data/carts.json';
+import { Cart } from "../models/cart.js";
+import { Product } from "../models/product.js";
 
-export default class CartManager {
-  async getAll() {
-    const data = await fs.readFile(path, 'utf-8');
-    return JSON.parse(data);
-  }
-
-  async getById(id) {
-    const carts = await this.getAll();
-    return carts.find(c => c.id == id);
-  }
-
+class CartManagerMongo {
   async createCart() {
-    const carts = await this.getAll();
-    const newCart = {
-      id: carts.length ? carts[carts.length - 1].id + 1 : 1,
-      products: [],
-    };
-    carts.push(newCart);
-    await fs.writeFile(path, JSON.stringify(carts, null, 2));
-    return newCart;
+    const newCart = new Cart({ products: [] });
+    return await newCart.save();
   }
 
-  async addProductToCart(cartId, productId) {
-    const carts = await this.getAll();
-    const cart = carts.find(c => c.id == cartId);
-    if (!cart) return null;
+  async getCartById(cid) {
+    return await Cart.findById(cid).populate("products.product");
+  }
 
-    const existingProduct = cart.products.find(p => p.product === productId);
-    if (existingProduct) {
-      existingProduct.quantity++;
+  async addProductToCart(cid, pid) {
+    const cart = await Cart.findById(cid);
+    if (!cart) throw new Error("Carrito no encontrado");
+
+    const product = await Product.findById(pid);
+    if (!product) throw new Error("Producto no encontrado");
+
+    const productIndex = cart.products.findIndex(p => p.product.toString() === pid);
+
+    if (productIndex !== -1) {
+      cart.products[productIndex].quantity += 1;
     } else {
-      cart.products.push({ product: productId, quantity: 1 });
+      cart.products.push({ product: pid, quantity: 1 });
     }
 
-    await fs.writeFile(path, JSON.stringify(carts, null, 2));
-    return cart;
+    return await cart.save();
+  }
+
+  async removeProductFromCart(cid, pid) {
+    const cart = await Cart.findById(cid);
+    if (!cart) throw new Error("Carrito no encontrado");
+
+    cart.products = cart.products.filter(p => p.product.toString() !== pid);
+    return await cart.save();
+  }
+
+  async updateCartProducts(cid, products) {
+    if (!Array.isArray(products)) throw new Error("El body debe contener un arreglo de productos");
+
+    return await Cart.findByIdAndUpdate(cid, { products }, { new: true }).populate("products.product");
+  }
+
+  async updateProductQuantity(cid, pid, quantity) {
+    const cart = await Cart.findById(cid);
+    if (!cart) throw new Error("Carrito no encontrado");
+
+    const productIndex = cart.products.findIndex(p => p.product.toString() === pid);
+    if (productIndex === -1) throw new Error("Producto no encontrado en carrito");
+
+    cart.products[productIndex].quantity = quantity;
+    return await cart.save();
+  }
+
+  async clearCart(cid) {
+    return await Cart.findByIdAndUpdate(cid, { products: [] }, { new: true });
   }
 }
+
+export default CartManagerMongo;
+

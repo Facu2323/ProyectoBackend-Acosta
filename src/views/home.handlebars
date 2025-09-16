@@ -1,10 +1,18 @@
-<h1>Lista de Productos</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{{title}}</title>
+  <link rel="stylesheet" href="/static/styles/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>{{title}}</h1>
+    <a href="/products" class="btn">Ver Productos</a>
+    <a href="/cart/{{TEST_CART_ID}}" class="btn">Ver Carrito</a>
+  </div>
+</body>
+</html>
 
-<ul>
-  {{#each products}}
-    <li>
-      <strong>{{this.title}}</strong> - ${{this.price}}
-    </li>
-  {{/each}}
-</ul>
+
 
